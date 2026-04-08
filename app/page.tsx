@@ -1,65 +1,137 @@
-import Image from "next/image";
+import { getServerSession } from "next-auth"
+import { redirect } from "next/navigation"
+import { authOptions } from "@/app/api/auth/[...nextauth]/route"
+import LoginButton from "@/components/LoginButton"
 
-export default function Home() {
+export default async function Home() {
+  const session = await getServerSession(authOptions)
+  if (session) redirect("/dashboard")
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <div
+      style={{
+        minHeight: "calc(100vh - 28px)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "20px",
+        gap: "16px",
+        flexWrap: "wrap",
+      }}
+    >
+      {/* 바탕화면 아이콘들 */}
+      <div style={{ position: "absolute", top: "16px", left: "16px", display: "flex", flexDirection: "column", gap: "8px" }}>
+        {[
+          { icon: "🗂️", label: "내 강의" },
+          { icon: "🌐", label: "Internet\nExplorer" },
+          { icon: "🗑️", label: "휴지통" },
+        ].map((item) => (
+          <div key={item.label} className="win98-icon">
+            <span style={{ fontSize: "32px" }}>{item.icon}</span>
+            <span className="icon-label" style={{ whiteSpace: "pre-line", color: "white", textShadow: "1px 1px 2px black" }}>
+              {item.label}
+            </span>
+          </div>
+        ))}
+      </div>
+
+      {/* 로그인 창 */}
+      <div className="win98-window" style={{ width: "340px" }}>
+        {/* Title bar */}
+        <div className="win98-title">
+          <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+            <span>📚</span>
+            <span>DeepLearn95 - 로그인</span>
+          </div>
+          <div style={{ display: "flex", gap: "2px" }}>
+            <span className="win98-title-btn">_</span>
+            <span className="win98-title-btn">□</span>
+            <span className="win98-title-btn" style={{ fontFamily: "serif" }}>✕</span>
+          </div>
+        </div>
+
+        {/* Content */}
+        <div style={{ padding: "16px" }}>
+          {/* App icon + name */}
+          <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "16px" }}>
+            <span style={{ fontSize: "48px" }}>🧠</span>
+            <div>
+              <div style={{ fontSize: "16px", fontWeight: "bold" }}>DeepLearn95</div>
+              <div style={{ fontSize: "11px", color: "var(--w98-dark)" }}>Week 5 딥러닝 핵심 개념</div>
+              <div style={{ fontSize: "10px", color: "var(--w98-dark)", marginTop: "2px" }}>버전 5.0 (1995)</div>
+            </div>
+          </div>
+
+          <div className="win98-sep" />
+
+          <div style={{ fontSize: "11px", marginBottom: "12px", marginTop: "8px" }}>
+            이 소프트웨어를 사용하려면 Google 계정으로 로그인하십시오.
+          </div>
+
+          {/* Features */}
+          <div
+            className="win98-listbox"
+            style={{ marginBottom: "12px", padding: "4px" }}
+          >
+            {[
+              "✓ Regularization (무료)",
+              "✓ Overfitting vs Underfitting (무료)",
+              "🔒 Data Augmentation (Pro)",
+              "🔒 Transfer Learning (Pro)",
+              "🔒 MNIST CNN 실습 (Pro)",
+            ].map((item) => (
+              <div key={item} className="item" style={{ padding: "2px 4px", fontSize: "11px" }}>
+                {item}
+              </div>
+            ))}
+          </div>
+
+          <div style={{ fontSize: "10px", color: "var(--w98-dark)", marginBottom: "12px" }}>
+            ※ 무료 조회 5회 제공 · 이후 Pro 플랜 필요
+          </div>
+
+          <div className="win98-sep" />
+
+          <div style={{ marginTop: "12px" }}>
+            <LoginButton />
+          </div>
+        </div>
+
+        {/* Status bar */}
+        <div className="win98-statusbar">
+          <div className="win98-status-panel" style={{ flex: 1 }}>
+            준비
+          </div>
+          <div className="win98-status-panel">
+            🔒 보안 연결
+          </div>
+        </div>
+      </div>
+
+      {/* 안내 팝업 */}
+      <div className="win98-window" style={{ width: "260px", alignSelf: "flex-start", marginTop: "40px" }}>
+        <div className="win98-title">
+          <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+            <span>ℹ️</span>
+            <span>도움말</span>
+          </div>
+          <span className="win98-title-btn" style={{ fontFamily: "serif" }}>✕</span>
+        </div>
+        <div style={{ padding: "12px", fontSize: "11px" }}>
+          <p style={{ marginBottom: "8px" }}>
+            <strong>Week 5 딥러닝</strong> 강의에 오신 것을 환영합니다!
           </p>
+          <p style={{ marginBottom: "8px" }}>
+            Google 계정으로 로그인하면 바로 학습을 시작할 수 있습니다.
+          </p>
+          <div className="win98-sep" />
+          <div style={{ marginTop: "8px" }}>
+            <div>📖 무료 토픽: 2개</div>
+            <div>⭐ Pro 토픽: 3개</div>
+            <div>🎯 무료 조회: 5회</div>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+      </div>
     </div>
-  );
+  )
 }
